@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import moment from "moment";
+import async from "async";
+import axios from "axios";
 // import injectTapEventPlugin from "react-tap-event-plugin";
 import AppBar from "material-ui/AppBar";
 import Drawer from "material-ui/Drawer";
@@ -88,8 +90,29 @@ class App extends Component {
   renderAppointmentConfirmation() {}
 
   resize() {}
-  componentWillMount() {}
-  componentWillUnmount() {}
+  componentWillMount() {
+    async.series(
+      {
+        configs(callback) {
+          axios
+            .get(HOST + "api/config")
+            .then(res => callback(null, res.data.data));
+        },
+        appointments(callback) {
+          axios
+            .get(HOST + "api/appointments")
+            .then(res => callback(null, res.data.data));
+        }
+      },
+      (err, response) => {
+        err ? this.handleFetchError(err) : this.handleFetch(response);
+      }
+    );
+    addEventListener("resize", this.resize);
+  }
+  componentWillUnmount() {
+    removeEventListener("resize", this.resize);
+  }
   render() {
     const {
       stepIndex,
