@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import "normalize.css";
 const app = (
   <MuiThemeProvider>
