@@ -12,6 +12,10 @@ import MenuItem from "material-ui/MenuItem";
 import TextField from "material-ui/TextField";
 import SnackBar from "material-ui/Snackbar";
 import Card from "material-ui/Card";
+
+import "react-dates/initialize";
+import "react-dates/lib/css/_datepicker.css";
+import { DateRangePicker } from "react-dates";
 import { Step, Stepper, StepLabel, StepContent } from "material-ui/Stepper";
 import { RadioButton, RadioButtonGroup } from "material-ui/RadioButton";
 import axios from "axios";
@@ -27,6 +31,8 @@ class AppointmentApp extends Component {
       lastName: "",
       email: "",
       schedule: [],
+      startDate: "",
+      endDate: "",
       confirmationModalOpen: false,
       appointmentDateSelected: false,
       appointmentMeridiem: 0,
@@ -42,6 +48,9 @@ class AppointmentApp extends Component {
       console.log("response via db: ", response.data);
       this.handleDBReponse(response.data);
     });
+  }
+  componentDidUpdate() {
+    console.log("current state", this.state);
   }
   handleSetAppointmentDate(date) {
     this.setState({ appointmentDate: date, confirmationTextVisible: true });
@@ -59,10 +68,12 @@ class AppointmentApp extends Component {
       name: this.state.firstName + " " + this.state.lastName,
       email: this.state.email,
       phone: this.state.phone,
-      slot_date: moment(this.state.appointmentDate).format("YYYY-DD-MM"),
+      slot_startDate: moment(this.state.startDate).format("YYYY-DD-MM"),
+      slot_endDate: moment(this.state.endDate).format("YYYY-DD-MM"),
       slot_time: this.state.appointmentSlot
     };
-    axios
+    console.log("form", newAppointment);
+    /* axios
       .post(API_BASE + "api/appointmentCreate", newAppointment)
       .then(response =>
         this.setState({
@@ -78,6 +89,7 @@ class AppointmentApp extends Component {
           confirmationSnackbarOpen: true
         });
       });
+      */
   }
 
   handleNext = () => {
@@ -283,6 +295,25 @@ class AppointmentApp extends Component {
         />
       </div>
     );
+    const DatePickerRange = () => (
+      <div>
+        <DateRangePicker
+          startDate={this.state.startDate} // momentPropTypes.momentObj or null,
+          startDateId="start1" // PropTypes.string.isRequired,
+          endDate={this.state.endDate} // momentPropTypes.momentObj or null,
+          endDateId="end1" // PropTypes.string.isRequired,
+          onDatesChange={({ startDate, endDate }) =>
+            this.setState({ startDate, endDate })
+          } // PropTypes.func.isRequired,
+          focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
+          onFocusChange={focusedInput => this.setState({ focusedInput })} // PropTypes.func.isRequired,
+          showDefaultInputIcon={true}
+          appendToBody={true}
+          showClearDates={true}
+          numberOfMonths={1}
+        />
+      </div>
+    );
     const modalActions = [
       <FlatButton
         label="Cancel"
@@ -324,8 +355,9 @@ class AppointmentApp extends Component {
                 <StepLabel>
                   Choose an available day for your appointment
                 </StepLabel>
+
                 <StepContent>
-                  {DatePickerExampleSimple()}
+                  {DatePickerRange()}
                   {this.renderStepActions(0)}
                 </StepContent>
               </Step>
