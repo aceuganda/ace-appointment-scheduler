@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import AppBar from "material-ui/AppBar";
 import RaisedButton from "material-ui/RaisedButton";
 import FlatButton from "material-ui/FlatButton";
@@ -12,7 +12,12 @@ import MenuItem from "material-ui/MenuItem";
 import TextField from "material-ui/TextField";
 import SnackBar from "material-ui/Snackbar";
 import Card from "material-ui/Card";
-
+import {
+  TimePicker,
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker
+} from "@material-ui/pickers";
+import MomentUtils from "@date-io/moment";
 import "react-dates/initialize";
 import "react-dates/lib/css/_datepicker.css";
 import { DateRangePicker } from "react-dates";
@@ -40,7 +45,9 @@ class AppointmentApp extends Component {
       validPhone: true,
       finished: false,
       smallScreen: window.innerWidth < 768,
-      stepIndex: 0
+      stepIndex: 0,
+      startTime: new Date(),
+      endTime: new Date()
     };
   }
   componentWillMount() {
@@ -62,6 +69,12 @@ class AppointmentApp extends Component {
   handleSetAppointmentMeridiem(meridiem) {
     this.setState({ appointmentMeridiem: meridiem });
   }
+  handleStartTime(date) {
+    this.setState({ startTime: date });
+  }
+  handleEndTime(date) {
+    this.setState({ endTime: date });
+  }
   handleSubmit() {
     this.setState({ confirmationModalOpen: false });
     const newAppointment = {
@@ -70,7 +83,8 @@ class AppointmentApp extends Component {
       phone: this.state.phone,
       slot_startDate: moment(this.state.startDate).format("YYYY-DD-MM"),
       slot_endDate: moment(this.state.endDate).format("YYYY-DD-MM"),
-      slot_time: this.state.appointmentSlot
+      slot_startTime: moment(this.state.startTime).format("HH:mm"),
+      slot_endTime: moment(this.state.endTime).format("HH:mm")
     };
     console.log("form", newAppointment);
     /* axios
@@ -182,19 +196,23 @@ class AppointmentApp extends Component {
           Email: <span style={spanStyle}>{this.state.email}</span>
         </p>
         <p>
-          Appointment:{" "}
+          Appointment Date: From{" "}
           <span style={spanStyle}>
-            {moment(this.state.appointmentDate).format(
-              "dddd[,] MMMM Do[,] YYYY"
-            )}
+            {moment(this.state.startDate).format("dddd[,] MMMM Do[,] YYYY")}
           </span>{" "}
-          at{" "}
+          to{" "}
           <span style={spanStyle}>
-            {moment()
-              .hour(9)
-              .minute(0)
-              .add(this.state.appointmentSlot, "hours")
-              .format("h:mm a")}
+            {moment(this.state.endDate).format("dddd[,] MMMM Do[,] YYYY")}
+          </span>{" "}
+        </p>
+        <p>
+          Appointment Time: From{" "}
+          <span style={spanStyle}>
+            {moment(this.state.startTime).format("HH:mm")}
+          </span>{" "}
+          to{" "}
+          <span style={spanStyle}>
+            {moment(this.state.endTime).format("HH:mm")}
           </span>
         </p>
       </section>
@@ -327,10 +345,11 @@ class AppointmentApp extends Component {
         onClick={() => this.handleSubmit()}
       />
     ];
+
     return (
       <div>
         <AppBar
-          title="Appointment Scheduler"
+          title="African Center of Excellence in Bioinformatics"
           iconClassNameRight="muidocs-icon-navigation-expand-more"
         />
         <section
@@ -366,7 +385,21 @@ class AppointmentApp extends Component {
                   Choose an available time for your appointment
                 </StepLabel>
                 <StepContent>
-                  <SelectField
+                  <MuiPickersUtilsProvider utils={MomentUtils}>
+                    <TimePicker
+                      label="Start Time"
+                      value={this.state.startTime}
+                      onChange={date => this.handleStartTime(date)}
+                    />
+
+                    <TimePicker
+                      label="End Time"
+                      value={this.state.endTime}
+                      onChange={date => this.handleEndTime(date)}
+                    />
+                  </MuiPickersUtilsProvider>
+
+                  {/* <SelectField
                     floatingLabelText="AM/PM"
                     value={data.appointmentMeridiem}
                     onChange={(evt, key, payload) =>
@@ -387,7 +420,8 @@ class AppointmentApp extends Component {
                     onChange={(evt, val) => this.handleSetAppointmentSlot(val)}
                   >
                     {this.renderAppointmentTimes()}
-                  </RadioButtonGroup>
+                  </RadioButtonGroup> */}
+
                   {this.renderStepActions(1)}
                 </StepContent>
               </Step>
