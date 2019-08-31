@@ -79,34 +79,43 @@ class AppointmentApp extends Component {
   }
   handleSubmit() {
     this.setState({ confirmationModalOpen: false, loading: true });
+    let st = moment(this.state.startTime).format("HH:mm:ss a");
+    let ed = moment(this.state.endTime).format("HH:mm:ss a");
+
+    let start = moment(st, "HH:mm:ss a");
+    let end = moment(ed, "HH:mm:ss a");
+    let d = moment.duration(end.diff(start));
+    let duration = parseInt(d.asHours());
     const newAppointment = {
       name: this.state.firstName + " " + this.state.lastName,
       email: this.state.email,
       phone: this.state.phone,
       slot_startDate: moment(this.state.startDate).format("YYYY-DD-MM"),
       slot_endDate: moment(this.state.endDate).format("YYYY-DD-MM"),
-      slot_startTime: moment(this.state.startTime).format("HH:mm"),
-      slot_endTime: moment(this.state.endTime).format("HH:mm")
+      slot_startTime: st,
+      slot_endTime: ed,
+      slot_days: this.state.endDate.diff(this.state.startDate, "days") + 1,
+      slot_hours: duration
     };
     console.log("form", newAppointment);
-    axios
-      .post(API_BASE + "api/appointmentCreate", newAppointment)
-      .then(response =>
-        this.setState({
-          confirmationSnackbarMessage: "Appointment succesfully added!",
-          confirmationSnackbarOpen: true,
-          processed: true,
-          loading: false
-        })
-      )
-      .catch(err => {
-        console.log(err);
-        return this.setState({
-          confirmationSnackbarMessage: "Appointment failed to save.",
-          confirmationSnackbarOpen: true,
-          loading: false
-        });
-      });
+    // axios
+    //   .post(API_BASE + "api/appointmentCreate", newAppointment)
+    //   .then(response =>
+    //     this.setState({
+    //       confirmationSnackbarMessage: "Appointment succesfully added!",
+    //       confirmationSnackbarOpen: true,
+    //       processed: true,
+    //       loading: false
+    //     })
+    //   )
+    //   .catch(err => {
+    //     console.log(err);
+    //     return this.setState({
+    //       confirmationSnackbarMessage: "Appointment failed to save.",
+    //       confirmationSnackbarOpen: true,
+    //       loading: false
+    //     });
+    //   });
   }
 
   handleNext = () => {
@@ -332,6 +341,7 @@ class AppointmentApp extends Component {
           appendToBody={true}
           showClearDates={true}
           numberOfMonths={1}
+          minimumNights={0}
         />
       </div>
     );
