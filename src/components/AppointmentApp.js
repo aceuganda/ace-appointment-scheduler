@@ -12,6 +12,7 @@ import MenuItem from "material-ui/MenuItem";
 import TextField from "material-ui/TextField";
 import SnackBar from "material-ui/Snackbar";
 import Card from "material-ui/Card";
+import LinearProgress from "material-ui/LinearProgress";
 import {
   TimePicker,
   MuiPickersUtilsProvider,
@@ -47,7 +48,8 @@ class AppointmentApp extends Component {
       smallScreen: window.innerWidth < 768,
       stepIndex: 0,
       startTime: new Date(),
-      endTime: new Date()
+      endTime: new Date(),
+      loading: false
     };
   }
   componentWillMount() {
@@ -76,7 +78,7 @@ class AppointmentApp extends Component {
     this.setState({ endTime: date });
   }
   handleSubmit() {
-    this.setState({ confirmationModalOpen: false });
+    this.setState({ confirmationModalOpen: false, loading: true });
     const newAppointment = {
       name: this.state.firstName + " " + this.state.lastName,
       email: this.state.email,
@@ -87,23 +89,24 @@ class AppointmentApp extends Component {
       slot_endTime: moment(this.state.endTime).format("HH:mm")
     };
     console.log("form", newAppointment);
-    /* axios
+    axios
       .post(API_BASE + "api/appointmentCreate", newAppointment)
       .then(response =>
         this.setState({
           confirmationSnackbarMessage: "Appointment succesfully added!",
           confirmationSnackbarOpen: true,
-          processed: true
+          processed: true,
+          loading: false
         })
       )
       .catch(err => {
         console.log(err);
         return this.setState({
           confirmationSnackbarMessage: "Appointment failed to save.",
-          confirmationSnackbarOpen: true
+          confirmationSnackbarOpen: true,
+          loading: false
         });
       });
-      */
   }
 
   handleNext = () => {
@@ -365,6 +368,7 @@ class AppointmentApp extends Component {
               height: smallScreen ? "100vh" : null
             }}
           >
+            {this.state.loading ? <LinearProgress /> : null}
             <Stepper
               activeStep={stepIndex}
               orientation="vertical"
