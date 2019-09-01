@@ -127,7 +127,7 @@ class AppointmentApp extends Component {
     const { stepIndex } = this.state;
     this.setState({
       stepIndex: stepIndex + 1,
-      finished: stepIndex >= 4
+      finished: stepIndex >= 5
     });
   };
 
@@ -197,7 +197,7 @@ class AppointmentApp extends Component {
     return (
       <div style={{ margin: "12px 0" }}>
         <RaisedButton
-          label={stepIndex === 4 ? "Finish" : "Next"}
+          label={stepIndex === 5 ? "Finish" : "Next"}
           disableTouchRipple={true}
           disableFocusRipple={true}
           primary={true}
@@ -251,8 +251,9 @@ class AppointmentApp extends Component {
           showDefaultInputIcon={true}
           appendToBody={true}
           showClearDates={true}
-          numberOfMonths={1}
+          numberOfMonths={smallScreen ? 1 : 2}
           minimumNights={0}
+          small={true}
         />
       </div>
     );
@@ -286,7 +287,7 @@ class AppointmentApp extends Component {
           <Card
             style={{
               padding: "12px 12px 25px 12px",
-              height: smallScreen ? "100vh" : null
+              minHeight: smallScreen ? "100vh" : null
             }}
           >
             {this.state.loading ? <LinearProgress /> : null}
@@ -488,17 +489,6 @@ class AppointmentApp extends Component {
 
                 <StepContent>
                   <section>
-                    {this.state.purpose === "Other" ? (
-                      <TextField
-                        style={{ display: "block" }}
-                        name="other"
-                        hintText="Other"
-                        floatingLabelText="Other"
-                        onChange={(evt, newValue) =>
-                          this.setState({ purpose: newValue })
-                        }
-                      />
-                    ) : null}
                     <FormLabel component="legend">
                       {" "}
                       How many people will be attending the meeting?
@@ -540,25 +530,35 @@ class AppointmentApp extends Component {
                       }
                     />
                   </section>{" "}
-                  <RaisedButton
-                    style={{ display: "block", backgroundColor: "#00C853" }}
-                    label={
-                      contactFormFilled
-                        ? "Schedule"
-                        : "Fill out your information to schedule"
-                    }
-                    labelPosition="before"
-                    primary={true}
-                    fullWidth={true}
-                    onClick={() =>
-                      this.setState({
-                        confirmationModalOpen: !this.state.confirmationModalOpen
-                      })
-                    }
-                    disabled={!contactFormFilled || data.processed}
-                    style={{ marginTop: 20, maxWidth: 100 }}
-                  />
                   {this.renderStepActions(4)}
+                </StepContent>
+              </Step>
+              <Step>
+                <StepLabel>Make your Schedule</StepLabel>
+
+                <StepContent>
+                  <section>
+                    <RaisedButton
+                      style={{ display: "block", backgroundColor: "#00C853" }}
+                      label={
+                        contactFormFilled
+                          ? "Schedule"
+                          : "Fill out your information to schedule"
+                      }
+                      labelPosition="before"
+                      primary={true}
+                      fullWidth={true}
+                      onClick={() =>
+                        this.setState({
+                          confirmationModalOpen: !this.state
+                            .confirmationModalOpen
+                        })
+                      }
+                      disabled={!contactFormFilled || data.processed}
+                      style={{ marginTop: 20, maxWidth: 100 }}
+                    />
+                  </section>{" "}
+                  {this.renderStepActions(5)}
                 </StepContent>
               </Step>
             </Stepper>
