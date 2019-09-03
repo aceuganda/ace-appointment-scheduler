@@ -39,7 +39,6 @@ class AppointmentApp extends Component {
       lastName: "",
       organisation: "",
       email: "",
-      schedule: [],
       startDate: "",
       endDate: "",
       confirmationModalOpen: false,
@@ -58,7 +57,12 @@ class AppointmentApp extends Component {
       number: "",
       description: "",
       recommendation: "",
-      other: ""
+      other: "",
+      vrMode: false,
+      tourMode:false,
+      coreMode:false,
+      teleMode:false,
+      otherMode:false
     };
   }
 
@@ -192,7 +196,67 @@ class AppointmentApp extends Component {
       </section>
     );
   }
-
+renderInformation(){
+  return(
+    <div>
+      <section>
+                    <FormLabel component="legend">
+                      {" "}
+                      How many people will be attending the meeting?
+                    </FormLabel>
+                    <TextField
+                      style={{ display: "block" }}
+                      name="number"
+                      hintText="Number"
+                      onChange={(evt, newValue) =>
+                        this.setState({ number: newValue })
+                      }
+                    />
+                    <FormLabel component="legend">
+                      {" "}
+                      What type of Analysis do you expect to do?
+                    </FormLabel>
+                    <TextField
+                      multiLine={true}
+                      name="analysis"
+                      hintText="Analysis"
+                      onChange={(evt, newValue) =>
+                        this.setState({ analysis: newValue })
+                      }
+                    />
+                    <FormLabel component="legend">
+                      {" "}
+                      Could you provide us with a brief description of the
+                      nature of data and an estimate of the amount of computing
+                      resources you expect to use.
+                    </FormLabel>
+                    <TextField
+                      multiLine={true}
+                      name="description"
+                      hintText="Description"
+                      onChange={(evt, newValue) =>
+                        this.setState({ description: newValue })
+                      }
+                    />
+                    <FormLabel component="legend">
+                      {" "}
+                      Please share with us any additional
+                      information/Suggestions that may be helpful to us
+                      scheduling and prepairing for your visit.
+                    </FormLabel>
+                    <TextField
+                      multiLine={true}
+                      name="recommendation"
+                      hintText="Recommendation"
+                      onChange={(evt, newValue) =>
+                        this.setState({ recommendation: newValue })
+                      }
+                    />
+                  </section>{" "}
+                  {this.renderStepActions(4)}
+    </div>
+  )
+}
   renderStepActions(step) {
     const { stepIndex } = this.state;
 
@@ -357,6 +421,16 @@ class AppointmentApp extends Component {
                           this.validatePhone(newValue)
                         }
                       />
+
+                      <TextField
+                        style={{ display: "block" }}
+                        floatingLabelText="Your Speciality"
+                        name="skillset"
+                        hintText="Your Specilaity"
+                        onChange={(evt, newValue) =>
+                          this.setState({ skillset: newValue })
+                        }
+                      />
                     </section>
                   </p>
                   {this.renderStepActions(0)}
@@ -457,31 +531,6 @@ class AppointmentApp extends Component {
                         }
                       />
                     ) : null}
-                    <FormLabel component="legend">
-                      {" "}
-                      What is your Speciality/Skillset?
-                    </FormLabel>
-                    <TextField
-                      multiLine={true}
-                      style={{ display: "block" }}
-                      name="skillset"
-                      hintText="Speciality"
-                      onChange={(evt, newValue) =>
-                        this.setState({ skillset: newValue })
-                      }
-                    />
-                    <FormLabel component="legend">
-                      {" "}
-                      What type of Analysis do you expect to do?
-                    </FormLabel>
-                    <TextField
-                      multiLine={true}
-                      name="analysis"
-                      hintText="Analysis"
-                      onChange={(evt, newValue) =>
-                        this.setState({ analysis: newValue })
-                      }
-                    />
                   </section>{" "}
                   {this.renderStepActions(3)}
                 </StepContent>
@@ -490,49 +539,7 @@ class AppointmentApp extends Component {
                 <StepLabel>Information...</StepLabel>
 
                 <StepContent>
-                  <section>
-                    <FormLabel component="legend">
-                      {" "}
-                      How many people will be attending the meeting?
-                    </FormLabel>
-                    <TextField
-                      style={{ display: "block" }}
-                      name="number"
-                      hintText="Number"
-                      onChange={(evt, newValue) =>
-                        this.setState({ number: newValue })
-                      }
-                    />
-                    <FormLabel component="legend">
-                      {" "}
-                      Could you provide us with a brief description of the
-                      nature of data and an estimate of the amount of computing
-                      resources you expect to use.
-                    </FormLabel>
-                    <TextField
-                      multiLine={true}
-                      name="description"
-                      hintText="Description"
-                      onChange={(evt, newValue) =>
-                        this.setState({ description: newValue })
-                      }
-                    />
-                    <FormLabel component="legend">
-                      {" "}
-                      Please share with us any additional
-                      information/Suggestions that may be helpful to us
-                      scheduling and prepairing for your visit.
-                    </FormLabel>
-                    <TextField
-                      multiLine={true}
-                      name="recommendation"
-                      hintText="Recommendation"
-                      onChange={(evt, newValue) =>
-                        this.setState({ recommendation: newValue })
-                      }
-                    />
-                  </section>{" "}
-                  {this.renderStepActions(4)}
+                  {this.renderInformation()}
                 </StepContent>
               </Step>
               <Step>
