@@ -59,7 +59,10 @@ class AppointmentApp extends Component {
       recommendation: "",
       vrPurpose: "",
       vrOther: "",
-      other: ""
+      other: "",
+      charge: "",
+      agreement: "",
+      chargeAmount: ""
     };
   }
 
@@ -71,6 +74,16 @@ class AppointmentApp extends Component {
     this.setState({ purpose: p });
   }
 
+  handleAgreement(a) {
+    this.setState({ agreement: a });
+  }
+  handleChargeAmount(a) {
+    this.setState({ chargeAmount: a });
+  }
+
+  handleCharge(c) {
+    this.setState({ charge: c });
+  }
   handleSetvrPurpose(p) {
     this.setState({ vrPurpose: p });
   }
@@ -201,6 +214,7 @@ class AppointmentApp extends Component {
     );
   }
 
+  renderChargeInformation() {}
   renderAdditionalInformation() {
     switch (this.state.purpose) {
       case "Computing Core":
@@ -258,6 +272,113 @@ class AppointmentApp extends Component {
                   this.setState({ recommendation: newValue })
                 }
               />
+              <FormLabel component="legend">
+                {" "}
+                Admission Type: Charge or no Charge
+                <small>
+                  <br />
+                  Please indicate whether or not you should be charged for the
+                  service. Please note that priority may be given to chargeable
+                  users.
+                </small>
+              </FormLabel>
+              <RadioButtonGroup
+                style={{
+                  marginTop: 15,
+                  marginLeft: 15
+                }}
+                name="charge"
+                onChange={(evt, val) => this.handleCharge(val)}
+              >
+                <RadioButton
+                  label="Yes, I would like to be charged"
+                  value="yes"
+                  style={{
+                    marginBottom: 15
+                  }}
+                />
+                <RadioButton
+                  label="Free Admission"
+                  value="no"
+                  style={{
+                    marginBottom: 15
+                  }}
+                />
+              </RadioButtonGroup>
+
+              {this.state.charge === "no" ? (
+                <React.Fragment>
+                  <FormLabel component="legend">
+                    {" "}
+                    Free Admission
+                    <small>
+                      <br />
+                      Condition: Kindly note that Free admissions may only apply
+                      to a few users and for a limited time only as priority may
+                      be given to chargeable users.
+                      <br /> I agree
+                    </small>
+                  </FormLabel>
+                  <RadioButtonGroup
+                    style={{
+                      marginTop: 15,
+                      marginLeft: 15
+                    }}
+                    name="agreement"
+                    onChange={(evt, val) => this.handleAgreement(val)}
+                  >
+                    <RadioButton
+                      label="Yes, I agree"
+                      value="yes"
+                      style={{
+                        marginBottom: 15
+                      }}
+                    />
+                    <RadioButton
+                      label="No"
+                      value="no"
+                      style={{
+                        marginBottom: 15
+                      }}
+                    />
+                  </RadioButtonGroup>
+                </React.Fragment>
+              ) : (
+                <React.Fragment>
+                  <FormLabel component="legend">
+                    {" "}
+                    Cost
+                    <small>
+                      <br />
+                      Note: The charges contained here are negotiable, but will
+                      gerally depend on how long you need the facility
+                    </small>
+                  </FormLabel>
+                  <RadioButtonGroup
+                    style={{
+                      marginTop: 15,
+                      marginLeft: 15
+                    }}
+                    name="chargeAmount"
+                    onChange={(evt, val) => this.handleChargeAmount(val)}
+                  >
+                    <RadioButton
+                      label="Per Day = $1"
+                      value="Per Day = $1"
+                      style={{
+                        marginBottom: 15
+                      }}
+                    />
+                    <RadioButton
+                      label="Per Week = 2$"
+                      value="Per Week = 2$"
+                      style={{
+                        marginBottom: 15
+                      }}
+                    />
+                  </RadioButtonGroup>
+                </React.Fragment>
+              )}
             </section>{" "}
             {this.renderStepActions(4)}
           </div>
