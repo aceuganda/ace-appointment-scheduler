@@ -39,7 +39,6 @@ class AppointmentApp extends Component {
       lastName: "",
       organisation: "",
       email: "",
-      schedule: [],
       startDate: "",
       endDate: "",
       confirmationModalOpen: false,
@@ -49,11 +48,21 @@ class AppointmentApp extends Component {
       finished: false,
       smallScreen: window.innerWidth < 768,
       stepIndex: 0,
-      startTime: new Date(),
-      endTime: new Date(),
+      startTime: new Date(2019, 12, 16, 8, 0),
+      endTime: new Date(2019, 12, 16, 17, 0),
       loading: false,
       purpose: "",
-      skillset: ""
+      skillset: "",
+      analysis: "",
+      number: "",
+      description: "",
+      recommendation: "",
+      other: "",
+      vrMode: false,
+      tourMode:false,
+      coreMode:false,
+      teleMode:false,
+      otherMode:false
     };
   }
 
@@ -85,6 +94,13 @@ class AppointmentApp extends Component {
       email: this.state.email,
       phone: this.state.phone,
       organisation: this.state.organisation,
+      purpose:
+        this.state.purpose === "Other" ? this.state.other : this.state.purpose,
+      skillset: this.state.skillset,
+      analysis: this.state.analysis,
+      number: this.state.number,
+      description: this.state.description,
+      recommendation: this.state.description,
       slot_startDate: moment(this.state.startDate).format("YYYY-DD-MM"),
       slot_endDate: moment(this.state.endDate).format("YYYY-DD-MM"),
       slot_startTime: st,
@@ -117,7 +133,7 @@ class AppointmentApp extends Component {
     const { stepIndex } = this.state;
     this.setState({
       stepIndex: stepIndex + 1,
-      finished: stepIndex >= 3
+      finished: stepIndex >= 5
     });
   };
 
@@ -180,14 +196,74 @@ class AppointmentApp extends Component {
       </section>
     );
   }
-
+renderInformation(){
+  return(
+    <div>
+      <section>
+                    <FormLabel component="legend">
+                      {" "}
+                      How many people will be attending the meeting?
+                    </FormLabel>
+                    <TextField
+                      style={{ display: "block" }}
+                      name="number"
+                      hintText="Number"
+                      onChange={(evt, newValue) =>
+                        this.setState({ number: newValue })
+                      }
+                    />
+                    <FormLabel component="legend">
+                      {" "}
+                      What type of Analysis do you expect to do?
+                    </FormLabel>
+                    <TextField
+                      multiLine={true}
+                      name="analysis"
+                      hintText="Analysis"
+                      onChange={(evt, newValue) =>
+                        this.setState({ analysis: newValue })
+                      }
+                    />
+                    <FormLabel component="legend">
+                      {" "}
+                      Could you provide us with a brief description of the
+                      nature of data and an estimate of the amount of computing
+                      resources you expect to use.
+                    </FormLabel>
+                    <TextField
+                      multiLine={true}
+                      name="description"
+                      hintText="Description"
+                      onChange={(evt, newValue) =>
+                        this.setState({ description: newValue })
+                      }
+                    />
+                    <FormLabel component="legend">
+                      {" "}
+                      Please share with us any additional
+                      information/Suggestions that may be helpful to us
+                      scheduling and prepairing for your visit.
+                    </FormLabel>
+                    <TextField
+                      multiLine={true}
+                      name="recommendation"
+                      hintText="Recommendation"
+                      onChange={(evt, newValue) =>
+                        this.setState({ recommendation: newValue })
+                      }
+                    />
+                  </section>{" "}
+                  {this.renderStepActions(4)}
+    </div>
+  )
+}
   renderStepActions(step) {
     const { stepIndex } = this.state;
 
     return (
       <div style={{ margin: "12px 0" }}>
         <RaisedButton
-          label={stepIndex === 3 ? "Finish" : "Next"}
+          label={stepIndex === 5 ? "Finish" : "Next"}
           disableTouchRipple={true}
           disableFocusRipple={true}
           primary={true}
@@ -241,8 +317,9 @@ class AppointmentApp extends Component {
           showDefaultInputIcon={true}
           appendToBody={true}
           showClearDates={true}
-          numberOfMonths={1}
+          numberOfMonths={smallScreen ? 1 : 2}
           minimumNights={0}
+          small={true}
         />
       </div>
     );
@@ -276,7 +353,7 @@ class AppointmentApp extends Component {
           <Card
             style={{
               padding: "12px 12px 25px 12px",
-              height: smallScreen ? "100vh" : null
+              minHeight: smallScreen ? "100vh" : null
             }}
           >
             {this.state.loading ? <LinearProgress /> : null}
@@ -342,6 +419,16 @@ class AppointmentApp extends Component {
                         }
                         onChange={(evt, newValue) =>
                           this.validatePhone(newValue)
+                        }
+                      />
+
+                      <TextField
+                        style={{ display: "block" }}
+                        floatingLabelText="Your Speciality"
+                        name="skillset"
+                        hintText="Your Specilaity"
+                        onChange={(evt, newValue) =>
+                          this.setState({ skillset: newValue })
                         }
                       />
                     </section>
@@ -440,55 +527,47 @@ class AppointmentApp extends Component {
                         hintText="Other"
                         floatingLabelText="Other"
                         onChange={(evt, newValue) =>
-                          this.setState({ purpose: newValue })
+                          this.setState({ other: newValue })
                         }
                       />
                     ) : null}
-                    <FormLabel component="legend">
-                      {" "}
-                      What is your Speciality/Skillset?
-                    </FormLabel>
-                    <TextField
-                      multiLine={true}
-                      style={{ display: "block" }}
-                      name="skillset"
-                      hintText="Speciality"
-                      onChange={(evt, newValue) =>
-                        this.setState({ skillset: newValue })
+                  </section>{" "}
+                  {this.renderStepActions(3)}
+                </StepContent>
+              </Step>
+              <Step>
+                <StepLabel>Information...</StepLabel>
+
+                <StepContent>
+                  {this.renderInformation()}
+                </StepContent>
+              </Step>
+              <Step>
+                <StepLabel>Make your Schedule</StepLabel>
+
+                <StepContent>
+                  <section>
+                    <RaisedButton
+                      style={{ display: "block", backgroundColor: "#00C853" }}
+                      label={
+                        contactFormFilled
+                          ? "Schedule"
+                          : "Fill out your information to schedule"
                       }
-                    />
-                    <FormLabel component="legend">
-                      {" "}
-                      What type of Analysis do you expect to do?
-                    </FormLabel>
-                    <TextField
-                      multiLine={true}
-                      name="analysis"
-                      hintText="Analysis"
-                      onChange={(evt, newValue) =>
-                        this.setState({ analysis: newValue })
+                      labelPosition="before"
+                      primary={true}
+                      fullWidth={true}
+                      onClick={() =>
+                        this.setState({
+                          confirmationModalOpen: !this.state
+                            .confirmationModalOpen
+                        })
                       }
+                      disabled={!contactFormFilled || data.processed}
+                      style={{ marginTop: 20, maxWidth: 100 }}
                     />
                   </section>{" "}
-                  <RaisedButton
-                    style={{ display: "block", backgroundColor: "#00C853" }}
-                    label={
-                      contactFormFilled
-                        ? "Schedule"
-                        : "Fill out your information to schedule"
-                    }
-                    labelPosition="before"
-                    primary={true}
-                    fullWidth={true}
-                    onClick={() =>
-                      this.setState({
-                        confirmationModalOpen: !this.state.confirmationModalOpen
-                      })
-                    }
-                    disabled={!contactFormFilled || data.processed}
-                    style={{ marginTop: 20, maxWidth: 100 }}
-                  />
-                  {this.renderStepActions(3)}
+                  {this.renderStepActions(5)}
                 </StepContent>
               </Step>
             </Stepper>
