@@ -57,7 +57,8 @@ class AppointmentApp extends Component {
       analysis: "",
       number: "",
       description: "",
-      recommendation: ""
+      recommendation: "",
+      other: ""
     };
   }
 
@@ -89,7 +90,8 @@ class AppointmentApp extends Component {
       email: this.state.email,
       phone: this.state.phone,
       organisation: this.state.organisation,
-      purpose: this.state.purpose,
+      purpose:
+        this.state.purpose === "Other" ? this.state.other : this.state.purpose,
       skillset: this.state.skillset,
       analysis: this.state.analysis,
       number: this.state.number,
@@ -451,7 +453,7 @@ class AppointmentApp extends Component {
                         hintText="Other"
                         floatingLabelText="Other"
                         onChange={(evt, newValue) =>
-                          this.setState({ purpose: newValue })
+                          this.setState({ other: newValue })
                         }
                       />
                     ) : null}
