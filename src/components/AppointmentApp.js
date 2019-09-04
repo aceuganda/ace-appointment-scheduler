@@ -10,11 +10,11 @@ import Dialog from "material-ui/Dialog";
 import SelectField from "material-ui/SelectField";
 import MenuItem from "material-ui/MenuItem";
 import TextField from "material-ui/TextField";
-import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import SnackBar from "material-ui/Snackbar";
 import Card from "material-ui/Card";
 import LinearProgress from "material-ui/LinearProgress";
 import FormLabel from "@material-ui/core/FormLabel";
+
 import {
   TimePicker,
   MuiPickersUtilsProvider,
@@ -62,7 +62,8 @@ class AppointmentApp extends Component {
       other: "",
       charge: "",
       agreement: "",
-      chargeAmount: ""
+      chargeAmount: "",
+      purposeValid: false
     };
   }
 
@@ -71,7 +72,7 @@ class AppointmentApp extends Component {
   }
 
   handleSetPurpose(p) {
-    this.setState({ purpose: p });
+    this.setState({ purpose: p, purposeValid: this.validatePurpose(p) });
   }
 
   handleAgreement(a) {
@@ -158,6 +159,16 @@ class AppointmentApp extends Component {
     const { stepIndex } = this.state;
     if (stepIndex > 0) {
       this.setState({ stepIndex: stepIndex - 1 });
+      if (stepIndex === 4) {
+        this.setState({ purpose: "", purposeValid: this.validatePurpose("") });
+        // console.log("handle previous step 3");
+        // this.state.purpose !== ""
+        //   ? this.setState({
+        //       purpose: "",
+        //       purposeValid: this.validatePurpose("")
+        //     })
+        //   : null;
+      }
     }
   };
   validateEmail(email) {
@@ -171,6 +182,22 @@ class AppointmentApp extends Component {
     return regex.test(phoneNumber)
       ? this.setState({ phone: phoneNumber, validPhone: true })
       : this.setState({ validPhone: false });
+  }
+  validatePurpose(value) {
+    let isValid = false;
+    if (value !== "") {
+      isValid = true;
+    }
+
+    return isValid;
+
+    // if (this.state.purpose === "") {
+    //   labelProps = (
+    //     <Typography variant="caption" color="error">
+    //       Please provide the booking purpose!
+    //     </Typography>
+    //   );
+    // }
   }
 
   //end of ...
@@ -382,7 +409,6 @@ class AppointmentApp extends Component {
                 </React.Fragment>
               ) : null}
             </section>{" "}
-           
             {this.renderStepActions(4)}
           </div>
         );
@@ -504,10 +530,19 @@ class AppointmentApp extends Component {
     return (
       <div style={{ margin: "12px 0" }}>
         <RaisedButton
-          label={stepIndex === 5 ? "Finish" : "Next"}
+          // label={stepIndex === 5 ? "Finish" : "Next"}
+
+          label={
+            stepIndex === 5
+              ? "Finish"
+              : this.state.purposeValid === false && stepIndex === 3
+              ? "Choose an Option"
+              : "Next"
+          }
           disableTouchRipple={true}
           disableFocusRipple={true}
           primary={true}
+          disabled={stepIndex === 3 ? !this.state.purposeValid : null}
           onClick={this.handleNext}
           backgroundColor="#00C853 !important"
           style={{ marginRight: 12, backgroundColor: "#00C853" }}
@@ -717,10 +752,11 @@ class AppointmentApp extends Component {
                 <StepContent>
                   <section>
                     <FormLabel component="legend"> Booking Purpose</FormLabel>
+
                     <RadioButtonGroup
                       style={{
                         marginTop: 15,
-                        marginLeft: 15
+                        marginLeft: 10
                       }}
                       name="purpose"
                       onChange={(evt, val) => this.handleSetPurpose(val)}
