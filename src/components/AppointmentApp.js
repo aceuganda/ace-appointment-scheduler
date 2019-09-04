@@ -214,7 +214,6 @@ class AppointmentApp extends Component {
     );
   }
 
-  renderChargeInformation() {}
   renderAdditionalInformation() {
     switch (this.state.purpose) {
       case "Computing Core":
@@ -226,7 +225,7 @@ class AppointmentApp extends Component {
                 How many people will be attending the meeting?
               </FormLabel>
               <TextField
-                style={{ display: "block" }}
+                style={{ display: "block", marginBottom: 15, marginTop: 15 }}
                 name="number"
                 hintText="Number"
                 onChange={(evt, newValue) =>
@@ -239,6 +238,7 @@ class AppointmentApp extends Component {
               </FormLabel>
               <TextField
                 multiLine={true}
+                style={{ display: "block", marginBottom: 15, marginTop: 15 }}
                 name="analysis"
                 hintText="Analysis"
                 onChange={(evt, newValue) =>
@@ -253,6 +253,7 @@ class AppointmentApp extends Component {
               </FormLabel>
               <TextField
                 multiLine={true}
+                style={{ display: "block", marginBottom: 15, marginTop: 15 }}
                 name="description"
                 hintText="Description"
                 onChange={(evt, newValue) =>
@@ -266,6 +267,7 @@ class AppointmentApp extends Component {
               </FormLabel>
               <TextField
                 multiLine={true}
+                style={{ display: "block", marginBottom: 15, marginTop: 15 }}
                 name="recommendation"
                 hintText="Recommendation"
                 onChange={(evt, newValue) =>
@@ -343,7 +345,7 @@ class AppointmentApp extends Component {
                     />
                   </RadioButtonGroup>
                 </React.Fragment>
-              ) : (
+              ) : this.state.charge === "yes" ? (
                 <React.Fragment>
                   <FormLabel component="legend">
                     {" "}
@@ -378,8 +380,9 @@ class AppointmentApp extends Component {
                     />
                   </RadioButtonGroup>
                 </React.Fragment>
-              )}
+              ) : null}
             </section>{" "}
+           
             {this.renderStepActions(4)}
           </div>
         );
