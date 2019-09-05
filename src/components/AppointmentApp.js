@@ -84,6 +84,9 @@ class AppointmentApp extends Component {
 
   handleCharge(c) {
     this.setState({ charge: c });
+    if (c === "no") {
+      this.setState({ chargeAmount: "" }); //reset chargeAmount state incase somone selects no
+    }
   }
   handleSetvrPurpose(p) {
     this.setState({ vrPurpose: p });
@@ -243,7 +246,7 @@ class AppointmentApp extends Component {
 
   renderAdditionalInformation() {
     switch (this.state.purpose) {
-      case "Computing Core":
+      case "Individual Research/Compute Core":
         return (
           <div>
             <section>
@@ -274,9 +277,9 @@ class AppointmentApp extends Component {
               />
               <FormLabel component="legend">
                 {" "}
-                Could you provide us with a brief description of the nature of
-                data and an estimate of the amount of computing resources you
-                expect to use.
+                Could you provide us with a brief description of the software
+                tools, nature of data and an estimate of the amount of computing
+                resources you expect to use.
               </FormLabel>
               <TextField
                 multiLine={true}
@@ -419,8 +422,172 @@ class AppointmentApp extends Component {
             <section>
               <FormLabel component="legend">
                 {" "}
-                Thats all we need! Continue to the next section to finish!
+                How many people will be attending the meeting?
               </FormLabel>
+              <TextField
+                style={{ display: "block", marginBottom: 15, marginTop: 15 }}
+                name="number"
+                hintText="Number"
+                onChange={(evt, newValue) =>
+                  this.setState({ number: newValue })
+                }
+              />
+              <FormLabel component="legend">
+                {" "}
+                Please share with us any additional information/Suggestions that
+                may be helpful to us scheduling and prepairing for your visit.
+              </FormLabel>
+              <TextField
+                multiLine={true}
+                style={{ display: "block", marginBottom: 15, marginTop: 15 }}
+                name="recommendation"
+                hintText="Recommendation"
+                onChange={(evt, newValue) =>
+                  this.setState({ recommendation: newValue })
+                }
+              />
+            </section>
+            {this.renderStepActions(4)}
+          </div>
+        );
+
+      case "TeleLearning Facility/ Training/ Workshop":
+        return (
+          <div>
+            <section>
+              <FormLabel component="legend">
+                {" "}
+                How many people will be attending the meeting?
+              </FormLabel>
+              <TextField
+                style={{ display: "block", marginBottom: 15, marginTop: 15 }}
+                name="number"
+                hintText="Number"
+                onChange={(evt, newValue) =>
+                  this.setState({ number: newValue })
+                }
+              />
+              <FormLabel component="legend">
+                {" "}
+                Please share with us any additional information/Suggestions that
+                may be helpful to us scheduling and prepairing for your visit.
+              </FormLabel>
+              <TextField
+                multiLine={true}
+                style={{ display: "block", marginBottom: 15, marginTop: 15 }}
+                name="recommendation"
+                hintText="Recommendation"
+                onChange={(evt, newValue) =>
+                  this.setState({ recommendation: newValue })
+                }
+              />
+              <FormLabel component="legend">
+                {" "}
+                Admission Type: Charge or no Charge
+                <small>
+                  <br />
+                  Please indicate whether or not you should be charged for the
+                  service. Please note that priority may be given to chargeable
+                  users.
+                </small>
+              </FormLabel>
+              <RadioButtonGroup
+                style={{
+                  marginTop: 15,
+                  marginLeft: 15
+                }}
+                name="charge"
+                onChange={(evt, val) => this.handleCharge(val)}
+              >
+                <RadioButton
+                  label="Yes, I would like to be charged"
+                  value="yes"
+                  style={{
+                    marginBottom: 15
+                  }}
+                />
+                <RadioButton
+                  label="Free Admission"
+                  value="no"
+                  style={{
+                    marginBottom: 15
+                  }}
+                />
+              </RadioButtonGroup>
+
+              {this.state.charge === "no" ? (
+                <React.Fragment>
+                  <FormLabel component="legend">
+                    {" "}
+                    Free Admission
+                    <small>
+                      <br />
+                      Condition: Kindly note that Free admissions may only apply
+                      to a few users and for a limited time only as priority may
+                      be given to chargeable users.
+                      <br /> I agree
+                    </small>
+                  </FormLabel>
+                  <RadioButtonGroup
+                    style={{
+                      marginTop: 15,
+                      marginLeft: 15
+                    }}
+                    name="agreement"
+                    onChange={(evt, val) => this.handleAgreement(val)}
+                  >
+                    <RadioButton
+                      label="Yes, I agree"
+                      value="yes"
+                      style={{
+                        marginBottom: 15
+                      }}
+                    />
+                    <RadioButton
+                      label="No"
+                      value="no"
+                      style={{
+                        marginBottom: 15
+                      }}
+                    />
+                  </RadioButtonGroup>
+                </React.Fragment>
+              ) : this.state.charge === "yes" ? (
+                <React.Fragment>
+                  <FormLabel component="legend">
+                    {" "}
+                    Cost
+                    <small>
+                      <br />
+                      Note: The charges contained here are negotiable, but will
+                      gerally depend on how long you need the facility
+                    </small>
+                  </FormLabel>
+                  <RadioButtonGroup
+                    style={{
+                      marginTop: 15,
+                      marginLeft: 15
+                    }}
+                    name="chargeAmount"
+                    onChange={(evt, val) => this.handleChargeAmount(val)}
+                  >
+                    <RadioButton
+                      label="Per Day = $1"
+                      value="Per Day = $1"
+                      style={{
+                        marginBottom: 15
+                      }}
+                    />
+                    <RadioButton
+                      label="Per Week = 2$"
+                      value="Per Week = 2$"
+                      style={{
+                        marginBottom: 15
+                      }}
+                    />
+                  </RadioButtonGroup>
+                </React.Fragment>
+              ) : null}
             </section>
             {this.renderStepActions(4)}
           </div>
@@ -431,9 +598,31 @@ class AppointmentApp extends Component {
             <section>
               <FormLabel component="legend">
                 {" "}
-                Thats all we need for now! We shall review your needs and get
-                back to you {this.state.firstName}!
+                How many people will be attending the meeting?
               </FormLabel>
+              <TextField
+                style={{ display: "block", marginBottom: 15, marginTop: 15 }}
+                name="number"
+                hintText="Number"
+                onChange={(evt, newValue) =>
+                  this.setState({ number: newValue })
+                }
+              />
+              <FormLabel component="legend">
+                {" "}
+                Could you provide us with a brief description of the nature of
+                data and an estimate of the amount of computing resources you
+                expect to use.
+              </FormLabel>
+              <TextField
+                multiLine={true}
+                style={{ display: "block", marginBottom: 15, marginTop: 15 }}
+                name="description"
+                hintText="Description"
+                onChange={(evt, newValue) =>
+                  this.setState({ description: newValue })
+                }
+              />
             </section>
             {this.renderStepActions(4)}
           </div>
@@ -442,6 +631,18 @@ class AppointmentApp extends Component {
         return (
           <div>
             <section>
+              <FormLabel component="legend">
+                {" "}
+                How many people will be attending the meeting?
+              </FormLabel>
+              <TextField
+                style={{ display: "block", marginBottom: 15, marginTop: 15 }}
+                name="number"
+                hintText="Number"
+                onChange={(evt, newValue) =>
+                  this.setState({ number: newValue })
+                }
+              />
               <FormLabel component="legend">
                 {" "}
                 Purpose for Visiting the VR lab
@@ -468,20 +669,7 @@ class AppointmentApp extends Component {
                     marginBottom: 15
                   }}
                 />
-                <RadioButton
-                  label="CT Scan and Molecular Visualizations"
-                  value="CT Scan and Molecular Visualizations"
-                  style={{
-                    marginBottom: 15
-                  }}
-                />
-                <RadioButton
-                  label="ACE Tour"
-                  value="ACE Tour"
-                  style={{
-                    marginBottom: 15
-                  }}
-                />
+
                 <RadioButton
                   label="Training/Workshop"
                   value="Training/Workshop"
@@ -516,7 +704,11 @@ class AppointmentApp extends Component {
         return (
           <div>
             <section>
-              <FormLabel component="legend"> Hello world</FormLabel>
+              <FormLabel component="legend">
+                {" "}
+                Please Choose an option from the previous section for us to know
+                your needs
+              </FormLabel>
             </section>
             {this.renderStepActions(4)}
           </div>
@@ -762,8 +954,8 @@ class AppointmentApp extends Component {
                       onChange={(evt, val) => this.handleSetPurpose(val)}
                     >
                       <RadioButton
-                        label="Tele Learning Facility/Training/Workshop"
-                        value="Tele Learning Facility/Training/Workshop"
+                        label="TeleLearning Facility/ Training/ Workshop"
+                        value="TeleLearning Facility/ Training/ Workshop"
                         style={{
                           marginBottom: 15
                         }}
@@ -776,8 +968,8 @@ class AppointmentApp extends Component {
                         }}
                       />
                       <RadioButton
-                        label="Computing Core"
-                        value="Computing Core"
+                        label="Individual Research/Compute Core"
+                        value="Individual Research/Compute Core"
                         style={{
                           marginBottom: 15
                         }}
@@ -789,13 +981,7 @@ class AppointmentApp extends Component {
                           marginBottom: 15
                         }}
                       />
-                      <RadioButton
-                        label="Individual Research"
-                        value="Individual Research"
-                        style={{
-                          marginBottom: 15
-                        }}
-                      />
+
                       <RadioButton
                         label="Other"
                         value="Other"
@@ -808,8 +994,8 @@ class AppointmentApp extends Component {
                       <TextField
                         style={{ display: "block" }}
                         name="other"
-                        hintText="Other"
-                        floatingLabelText="Other"
+                        hintText="Please Specify"
+                        floatingLabelText="Please Specify"
                         onChange={(evt, newValue) =>
                           this.setState({ other: newValue })
                         }
