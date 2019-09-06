@@ -696,6 +696,137 @@ class AppointmentApp extends Component {
                   }
                 />
               ) : null}
+
+              {this.state.vrPurpose === "Training/Workshop" ? (
+                <React.Fragment>
+                  <FormLabel component="legend">
+                    {" "}
+                    Could you provide us with a brief description of the
+                    software tools, nature of data and an estimate of the amount
+                    of computing resources you expect to use.
+                  </FormLabel>
+                  <TextField
+                    multiLine={true}
+                    style={{
+                      display: "block",
+                      marginBottom: 15,
+                      marginTop: 15
+                    }}
+                    name="description"
+                    hintText="Description"
+                    onChange={(evt, newValue) =>
+                      this.setState({ description: newValue })
+                    }
+                  />
+                  <FormLabel component="legend">
+                    {" "}
+                    Admission Type: Charge or no Charge
+                    <small>
+                      <br />
+                      Please indicate whether or not you should be charged for
+                      the service. Please note that priority may be given to
+                      chargeable users.
+                    </small>
+                  </FormLabel>
+                  <RadioButtonGroup
+                    style={{
+                      marginTop: 15,
+                      marginLeft: 15
+                    }}
+                    name="charge"
+                    onChange={(evt, val) => this.handleCharge(val)}
+                  >
+                    <RadioButton
+                      label="Yes, I would like to be charged"
+                      value="yes"
+                      style={{
+                        marginBottom: 15
+                      }}
+                    />
+                    <RadioButton
+                      label="Free Admission"
+                      value="no"
+                      style={{
+                        marginBottom: 15
+                      }}
+                    />
+                  </RadioButtonGroup>
+
+                  {this.state.charge === "no" ? (
+                    <React.Fragment>
+                      <FormLabel component="legend">
+                        {" "}
+                        Free Admission
+                        <small>
+                          <br />
+                          Condition: Kindly note that Free admissions may only
+                          apply to a few users and for a limited time only as
+                          priority may be given to chargeable users.
+                          <br /> I agree
+                        </small>
+                      </FormLabel>
+                      <RadioButtonGroup
+                        style={{
+                          marginTop: 15,
+                          marginLeft: 15
+                        }}
+                        name="agreement"
+                        onChange={(evt, val) => this.handleAgreement(val)}
+                      >
+                        <RadioButton
+                          label="Yes, I agree"
+                          value="yes"
+                          style={{
+                            marginBottom: 15
+                          }}
+                        />
+                        <RadioButton
+                          label="No"
+                          value="no"
+                          style={{
+                            marginBottom: 15
+                          }}
+                        />
+                      </RadioButtonGroup>
+                    </React.Fragment>
+                  ) : this.state.charge === "yes" ? (
+                    <React.Fragment>
+                      <FormLabel component="legend">
+                        {" "}
+                        Cost
+                        <small>
+                          <br />
+                          Note: The charges contained here are negotiable, but
+                          will gerally depend on how long you need the facility
+                        </small>
+                      </FormLabel>
+                      <RadioButtonGroup
+                        style={{
+                          marginTop: 15,
+                          marginLeft: 15
+                        }}
+                        name="chargeAmount"
+                        onChange={(evt, val) => this.handleChargeAmount(val)}
+                      >
+                        <RadioButton
+                          label="Per Day = $1"
+                          value="Per Day = $1"
+                          style={{
+                            marginBottom: 15
+                          }}
+                        />
+                        <RadioButton
+                          label="Per Week = 2$"
+                          value="Per Week = 2$"
+                          style={{
+                            marginBottom: 15
+                          }}
+                        />
+                      </RadioButtonGroup>
+                    </React.Fragment>
+                  ) : null}
+                </React.Fragment>
+              ) : null}
             </section>
             {this.renderStepActions(4)}
           </div>
@@ -718,6 +849,9 @@ class AppointmentApp extends Component {
   }
   renderStepActions(step) {
     const { stepIndex } = this.state;
+    if (stepIndex === 4) {
+      console.log("step 4");
+    }
 
     return (
       <div style={{ margin: "12px 0" }}>
@@ -745,7 +879,13 @@ class AppointmentApp extends Component {
             disabled={stepIndex === 0}
             disableTouchRipple={true}
             disableFocusRipple={true}
-            onClick={this.handlePrev}
+            // onClick={this.handlePrev}
+            onClick={() => {
+              this.handlePrev();
+              this.state.vrPurpose !== ""
+                ? this.setState({ vrPurpose: "" }) //Reset vrPurpose state field
+                : null;
+            }}
           />
         )}
       </div>
