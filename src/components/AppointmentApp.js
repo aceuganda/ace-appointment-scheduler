@@ -6,7 +6,17 @@ import RaisedButton from "material-ui/RaisedButton";
 import FlatButton from "material-ui/FlatButton";
 import moment from "moment";
 import DatePicker from "material-ui/DatePicker";
-import Dialog from "material-ui/Dialog";
+import Dialog2 from "material-ui/Dialog";
+import Link from "@material-ui/core/Link";
+import Button from "@material-ui/core/Button";
+
+import Dialog from "@material-ui/core/Dialog";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogTitle from "@material-ui/core/DialogTitle";
+
 import SelectField from "material-ui/SelectField";
 import MenuItem from "material-ui/MenuItem";
 import TextField from "material-ui/TextField";
@@ -39,8 +49,9 @@ class AppointmentApp extends Component {
       lastName: "",
       organisation: "",
       email: "",
-      startDate: "",
-      endDate: "",
+      startDate: null,
+      endDate: null,
+      agreementModalOpen: false,
       confirmationModalOpen: false,
       appointmentDateSelected: false,
       validEmail: true,
@@ -67,9 +78,9 @@ class AppointmentApp extends Component {
     };
   }
 
-  componentDidUpdate() {
-    console.log("current state", this.state);
-  }
+  // componentDidUpdate() {
+  //   console.log("current state", this.state);
+  // }
 
   handleSetPurpose(p) {
     this.setState({ purpose: p, purposeValid: this.validatePurpose(p) });
@@ -129,7 +140,17 @@ class AppointmentApp extends Component {
       slot_days: this.state.endDate.diff(this.state.startDate, "days") + 1,
       slot_hours: duration
     };
-    console.log("form", newAppointment);
+    // console.log("form", newAppointment);
+
+    setTimeout(() => {
+      this.setState({
+        confirmationSnackbarMessage: "Appointment succesfully added!",
+        confirmationSnackbarOpen: true,
+        processed: true,
+        loading: false
+      });
+    }, 3500);
+
     // axios
     //   .post(API_BASE + "api/appointmentCreate", newAppointment)
     //   .then(response =>
@@ -204,6 +225,100 @@ class AppointmentApp extends Component {
   }
 
   //end of ...
+  renderAgreement() {
+    return (
+      <section>
+        <p>
+          Request to use equipment, computers or facilities shall be made at
+          least 3 working days prior through IDI ACE Bioinformatics authorities.
+        </p>{" "}
+        <p>
+          No person shall without authority access or attempt to gain access to
+          any computer and or facility.
+        </p>
+        <p>
+          The granted access will only be for a limited time only as requested
+          for by the user, but can be extended or reduced depending on the
+          availability of the facility all at the discretion of the Facilities
+          manager.
+        </p>
+        <p>
+          Access shall only be to very specific information and will not include
+          access to information that the user does not require access to.
+        </p>
+        <p>
+          The ACE designee must be present and onsite when the facility or
+          equipment are being used.
+        </p>
+        <p>
+          IDI/designee will assume the responsibility of supervising the user to
+          ensure compliance and protecting the facilities.
+        </p>
+        <p>
+          Facility use and or use of computers shall be on first come first
+          serve basis, but manager/in-charge may give priority
+        </p>
+        <p>
+          While using the facility, cell phones and other gadgets should be set
+          silent or turned off to avoid disruptions and any applications with
+          audio output should be used with headphones.
+        </p>
+        <p>
+          Conversations and discussions should also be kept silent to avoid
+          disrupting other users
+        </p>
+        <p>
+          Users of the computer clusters should avoid saving their work on the
+          computers as these would be deleted. Files must be saved on personal
+          hard drives on USB/Flash drive after a day’s work to avoid loss.
+        </p>
+        <p>
+          Personal, sensitive and confidential data types shall not be stored on
+          external hosted service such as Dropbox or Google docs.
+        </p>
+        <p>
+          Request and approval must be sought from the ACE bioinformatics
+          head/manager and head of department to use the data.
+        </p>
+        <p>
+          Only the ACE bioinformatics IT systems manager will be permitted to
+          store, make manipulations and backup data. Outside users are
+          discouraged from attempting to make any changes to data and any such
+          changes whether intentional or accidental must be reported.
+        </p>
+        <p>
+          Accessing pornography or profane content and using the facility to
+          disseminate offensive, threatening or abusive messages is strictly
+          prohibited in this facility. Individuals who violate this prohibition
+          will be subject to disciplinary action that may result into loss of
+          access or ban.
+        </p>
+        <p>
+          Non facility staff and students are prohibited from changing any
+          computer hardware or software. This violation may lead to loss of
+          facility privileges.
+        </p>
+        <p>
+          No external user shall remove, interfere or tamper with any components
+          of the facility or computer or use any computer system in ways that
+          interfere with its use
+        </p>
+        <p>
+          Damage to computers or facilities will lead to fines and may in some
+          cases result into loss or denial of facility access privileges
+        </p>
+        <p>
+          A record shall be maintained to indicate arrival and departure of
+          visitors or persons utilising the facility
+        </p>
+        <p>
+          No food or drinks shall be consumed in the computer rooms. Any
+          accidental spills on equipment and computers must be reported after
+          which an assessment shall be done to determine damage.
+        </p>
+      </section>
+    );
+  }
   renderAppointmentConfirmation() {
     const spanStyle = { color: "#00C853" };
     return (
@@ -849,9 +964,6 @@ class AppointmentApp extends Component {
   }
   renderStepActions(step) {
     const { stepIndex } = this.state;
-    if (stepIndex === 4) {
-      console.log("step 4");
-    }
 
     return (
       <div style={{ margin: "12px 0" }}>
@@ -863,12 +975,24 @@ class AppointmentApp extends Component {
               ? "Finish"
               : this.state.purposeValid === false && stepIndex === 3
               ? "Choose an Option"
+              : stepIndex === 1 &&
+                this.state.startDate === null &&
+                this.state.endDate === null
+              ? "Choose a date"
               : "Next"
           }
           disableTouchRipple={true}
           disableFocusRipple={true}
           primary={true}
-          disabled={stepIndex === 3 ? !this.state.purposeValid : null}
+          disabled={
+            stepIndex === 3
+              ? !this.state.purposeValid
+              : stepIndex === 1 &&
+                this.state.startDate === null &&
+                this.state.endDate === null
+              ? true
+              : null
+          }
           onClick={this.handleNext}
           backgroundColor="#00C853 !important"
           style={{ marginRight: 12, backgroundColor: "#00C853" }}
@@ -899,6 +1023,7 @@ class AppointmentApp extends Component {
       smallScreen,
       stepIndex,
       confirmationModalOpen,
+      agreementModalOpen,
       confirmationSnackbarOpen,
       ...data
     } = this.state;
@@ -908,6 +1033,7 @@ class AppointmentApp extends Component {
       data.phone &&
       data.email &&
       data.validPhone &&
+      data.skillset &&
       data.validEmail;
 
     const DatePickerRange = () => (
@@ -986,6 +1112,7 @@ class AppointmentApp extends Component {
                         onChange={(evt, newValue) =>
                           this.setState({ firstName: newValue })
                         }
+                        value={this.state.firstName}
                       />
                       <TextField
                         style={{ display: "block" }}
@@ -995,6 +1122,7 @@ class AppointmentApp extends Component {
                         onChange={(evt, newValue) =>
                           this.setState({ lastName: newValue })
                         }
+                        value={this.state.lastName}
                       />
                       <TextField
                         style={{ display: "block" }}
@@ -1004,6 +1132,7 @@ class AppointmentApp extends Component {
                         onChange={(evt, newValue) =>
                           this.setState({ organisation: newValue })
                         }
+                        value={this.state.organisation}
                       />
                       <TextField
                         style={{ display: "block" }}
@@ -1016,11 +1145,12 @@ class AppointmentApp extends Component {
                         onChange={(evt, newValue) =>
                           this.validateEmail(newValue)
                         }
+                        // value={data.validEmail ? this.state.email : null}
                       />
                       <TextField
                         style={{ display: "block" }}
                         name="phone"
-                        hintText="+2348995989"
+                        hintText="+2567995989"
                         floatingLabelText="Phone"
                         errorText={
                           data.validPhone ? null : "Enter a valid phone number"
@@ -1028,6 +1158,7 @@ class AppointmentApp extends Component {
                         onChange={(evt, newValue) =>
                           this.validatePhone(newValue)
                         }
+                        // value={this.state.phone}
                       />
 
                       <TextField
@@ -1038,6 +1169,7 @@ class AppointmentApp extends Component {
                         onChange={(evt, newValue) =>
                           this.setState({ skillset: newValue })
                         }
+                        value={this.state.skillset}
                       />
                     </section>
                   </p>
@@ -1161,12 +1293,27 @@ class AppointmentApp extends Component {
 
                 <StepContent>
                   <section>
+                    By clicking submit you are agreeing to the{" "}
+                    <Link
+                      style={{
+                        cursor: "pointer"
+                      }}
+                      onClick={() =>
+                        this.setState({
+                          agreementModalOpen: !this.state.agreementModalOpen
+                        })
+                      }
+                      color="secondary"
+                      variant="inherit"
+                    >
+                      Terms and Conditions
+                    </Link>
                     <RaisedButton
                       style={{ display: "block", backgroundColor: "#00C853" }}
                       label={
                         contactFormFilled
                           ? "Schedule"
-                          : "Fill out your information to schedule"
+                          : "Fill out your contact information in section 1 to schedule"
                       }
                       labelPosition="before"
                       primary={true}
@@ -1186,13 +1333,40 @@ class AppointmentApp extends Component {
               </Step>
             </Stepper>
           </Card>
-          <Dialog
+          <Dialog2
             modal={true}
             open={confirmationModalOpen}
             actions={modalActions}
             title="Confirm your appointment"
           >
             {this.renderAppointmentConfirmation()}
+          </Dialog2>
+
+          <Dialog
+            open={agreementModalOpen}
+            onClose={() => this.setState({ agreementModalOpen: false })}
+          >
+            <DialogTitle>Terms and Agreement</DialogTitle>
+            <DialogContent dividers={true}>
+              <DialogContentText>{this.renderAgreement()}</DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                onClick={() => this.setState({ agreementModalOpen: false })}
+                color="secondary"
+                variant="contained"
+              >
+                Disagree
+              </Button>
+              <Button
+                onClick={() => this.setState({ agreementModalOpen: false })}
+                color="primary"
+                variant="contained"
+                autoFocus
+              >
+                Agree
+              </Button>
+            </DialogActions>
           </Dialog>
           <SnackBar
             open={confirmationSnackbarOpen || isLoading}
