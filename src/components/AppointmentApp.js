@@ -1074,7 +1074,7 @@ class AppointmentApp extends Component {
             )
           }
           // iconClassNameRight="muidocs-icon-navigation-expand-more"
-          iconElementRight={<img src="/acewhite.png" />}
+          iconElementRight={<img src={process.env.PUBLIC_URL +'/acewhite.png'}/>}
         />
         <section
           style={{
