@@ -9,6 +9,8 @@ import DatePicker from "material-ui/DatePicker";
 import Dialog2 from "material-ui/Dialog";
 import Link from "@material-ui/core/Link";
 import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
+import Paper from "@material-ui/core/Paper";
 
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -38,7 +40,7 @@ import { Step, Stepper, StepLabel, StepContent } from "material-ui/Stepper";
 import { RadioButton, RadioButtonGroup } from "material-ui/RadioButton";
 import axios from "axios";
 
-const API_BASE = "http://localhost:8083/";
+const API_BASE = "https://aceuganda.herokuapp.com/";
 
 class AppointmentApp extends Component {
   constructor(props, context) {
@@ -77,10 +79,6 @@ class AppointmentApp extends Component {
       purposeValid: false
     };
   }
-
-  // componentDidUpdate() {
-  //   console.log("current state", this.state);
-  // }
 
   handleSetPurpose(p) {
     this.setState({ purpose: p, purposeValid: this.validatePurpose(p) });
@@ -133,6 +131,9 @@ class AppointmentApp extends Component {
         this.state.vrPurpose === "vrOther"
           ? this.state.vrOther
           : this.state.vrPurpose,
+      charge: this.state.charge,
+      agreement: this.state.agreement,
+      chargeAmount: this.state.chargeAmount,
       slot_startDate: moment(this.state.startDate).format("YYYY-DD-MM"),
       slot_endDate: moment(this.state.endDate).format("YYYY-DD-MM"),
       slot_startTime: st,
@@ -142,33 +143,24 @@ class AppointmentApp extends Component {
     };
     // console.log("form", newAppointment);
 
-    setTimeout(() => {
-      this.setState({
-        confirmationSnackbarMessage: "Appointment succesfully added!",
-        confirmationSnackbarOpen: true,
-        processed: true,
-        loading: false
+    axios
+      .post(API_BASE + "api/appointmentCreate", newAppointment)
+      .then(response =>
+        this.setState({
+          confirmationSnackbarMessage: "Appointment succesfully added!",
+          confirmationSnackbarOpen: true,
+          processed: true,
+          loading: false
+        })
+      )
+      .catch(err => {
+        console.log(err);
+        return this.setState({
+          confirmationSnackbarMessage: "Appointment failed to save.",
+          confirmationSnackbarOpen: true,
+          loading: false
+        });
       });
-    }, 3500);
-
-    // axios
-    //   .post(API_BASE + "api/appointmentCreate", newAppointment)
-    //   .then(response =>
-    //     this.setState({
-    //       confirmationSnackbarMessage: "Appointment succesfully added!",
-    //       confirmationSnackbarOpen: true,
-    //       processed: true,
-    //       loading: false
-    //     })
-    //   )
-    //   .catch(err => {
-    //     console.log(err);
-    //     return this.setState({
-    //       confirmationSnackbarMessage: "Appointment failed to save.",
-    //       confirmationSnackbarOpen: true,
-    //       loading: false
-    //     });
-    //   });
   }
 
   handleNext = () => {
@@ -214,14 +206,6 @@ class AppointmentApp extends Component {
     }
 
     return isValid;
-
-    // if (this.state.purpose === "") {
-    //   labelProps = (
-    //     <Typography variant="caption" color="error">
-    //       Please provide the booking purpose!
-    //     </Typography>
-    //   );
-    // }
   }
 
   //end of ...
@@ -334,6 +318,9 @@ class AppointmentApp extends Component {
         </p>
         <p>
           Email: <span style={spanStyle}>{this.state.email}</span>
+        </p>
+        <p>
+          Purpose: <span style={spanStyle}>{this.state.purpose}</span>
         </p>
         <p>
           Appointment Date: From{" "}
@@ -963,7 +950,16 @@ class AppointmentApp extends Component {
     }
   }
   renderStepActions(step) {
-    const { stepIndex } = this.state;
+    const { stepIndex, ...data } = this.state;
+
+    const contactFormFilled =
+      data.firstName &&
+      data.lastName &&
+      data.phone &&
+      data.email &&
+      data.validPhone &&
+      data.skillset &&
+      data.validEmail;
 
     return (
       <div style={{ margin: "12px 0" }}>
@@ -979,6 +975,8 @@ class AppointmentApp extends Component {
                 this.state.startDate === null &&
                 this.state.endDate === null
               ? "Choose a date"
+              : stepIndex === 0 && !contactFormFilled
+              ? "Fill in Your Information"
               : "Next"
           }
           disableTouchRipple={true}
@@ -990,6 +988,8 @@ class AppointmentApp extends Component {
               : stepIndex === 1 &&
                 this.state.startDate === null &&
                 this.state.endDate === null
+              ? true
+              : stepIndex === 0 && !contactFormFilled
               ? true
               : null
           }
@@ -1027,14 +1027,6 @@ class AppointmentApp extends Component {
       confirmationSnackbarOpen,
       ...data
     } = this.state;
-    const contactFormFilled =
-      data.firstName &&
-      data.lastName &&
-      data.phone &&
-      data.email &&
-      data.validPhone &&
-      data.skillset &&
-      data.validEmail;
 
     const DatePickerRange = () => (
       <div>
@@ -1074,8 +1066,17 @@ class AppointmentApp extends Component {
     return (
       <div>
         <AppBar
-          title="African Center of Excellence in Bioinformatics"
-          iconClassNameRight="muidocs-icon-navigation-expand-more"
+          title={
+            smallScreen ? (
+              <div>ACE Bioinformatics</div>
+            ) : (
+              <div>African Center of Excellence in Bioinformatics</div>
+            )
+          }
+          // iconClassNameRight="muidocs-icon-navigation-expand-more"
+          iconElementRight={
+            <img src={process.env.PUBLIC_URL + "/acewhite.png"} />
+          }
         />
         <section
           style={{
@@ -1084,6 +1085,17 @@ class AppointmentApp extends Component {
             marginTop: !smallScreen ? 20 : 0
           }}
         >
+          <Paper
+            style={{
+              margin: "auto",
+              marginBottom: 20,
+              padding: "25px 50px 40px 35px"
+            }}
+          >
+            <Typography variant="h5" component="h3">
+              Booking Form for ACE Bioinformatics Facilities
+            </Typography>
+          </Paper>
           <Card
             style={{
               padding: "12px 12px 25px 12px",
@@ -1310,11 +1322,7 @@ class AppointmentApp extends Component {
                     </Link>
                     <RaisedButton
                       style={{ display: "block", backgroundColor: "#00C853" }}
-                      label={
-                        contactFormFilled
-                          ? "Schedule"
-                          : "Fill out your contact information in section 1 to schedule"
-                      }
+                      label={"Schedule"}
                       labelPosition="before"
                       primary={true}
                       fullWidth={true}
@@ -1324,7 +1332,7 @@ class AppointmentApp extends Component {
                             .confirmationModalOpen
                         })
                       }
-                      disabled={!contactFormFilled || data.processed}
+                      disabled={data.processed}
                       style={{ marginTop: 20, maxWidth: 100 }}
                     />
                   </section>{" "}
