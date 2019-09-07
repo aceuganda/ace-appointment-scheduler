@@ -10,6 +10,7 @@ import Dialog2 from "material-ui/Dialog";
 import Link from "@material-ui/core/Link";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
+import Paper from "@material-ui/core/Paper";
 
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -1069,11 +1070,11 @@ class AppointmentApp extends Component {
             smallScreen ? (
               <div>ACE Bioinformatics</div>
             ) : (
-              <div>Booking Form for ACE Bioinformatics Facilities</div>
+              <div>African Center of Excellence in Bioinformatics</div>
             )
           }
           // iconClassNameRight="muidocs-icon-navigation-expand-more"
-          iconElementRight={<img src="/acewhite.svg" />}
+          iconElementRight={<img src="/acewhite.png" />}
         />
         <section
           style={{
@@ -1082,6 +1083,17 @@ class AppointmentApp extends Component {
             marginTop: !smallScreen ? 20 : 0
           }}
         >
+          <Paper
+            style={{
+              margin: "auto",
+              marginBottom: 20,
+              padding: "25px 50px 40px 35px"
+            }}
+          >
+            <Typography variant="h5" component="h3">
+              Booking Form for ACE Bioinformatics Facilities
+            </Typography>
+          </Paper>
           <Card
             style={{
               padding: "12px 12px 25px 12px",
