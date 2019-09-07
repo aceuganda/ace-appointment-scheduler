@@ -39,7 +39,7 @@ import { Step, Stepper, StepLabel, StepContent } from "material-ui/Stepper";
 import { RadioButton, RadioButtonGroup } from "material-ui/RadioButton";
 import axios from "axios";
 
-const API_BASE = "http://localhost:8083/";
+const API_BASE = "https://aceuganda.herokuapp.com/";
 
 class AppointmentApp extends Component {
   constructor(props, context) {
@@ -78,10 +78,6 @@ class AppointmentApp extends Component {
       purposeValid: false
     };
   }
-
-  // componentDidUpdate() {
-  //   console.log("current state", this.state);
-  // }
 
   handleSetPurpose(p) {
     this.setState({ purpose: p, purposeValid: this.validatePurpose(p) });
@@ -144,7 +140,7 @@ class AppointmentApp extends Component {
       slot_days: this.state.endDate.diff(this.state.startDate, "days") + 1,
       slot_hours: duration
     };
-    console.log("form", newAppointment);
+    // console.log("form", newAppointment);
 
     axios
       .post(API_BASE + "api/appointmentCreate", newAppointment)
@@ -209,14 +205,6 @@ class AppointmentApp extends Component {
     }
 
     return isValid;
-
-    // if (this.state.purpose === "") {
-    //   labelProps = (
-    //     <Typography variant="caption" color="error">
-    //       Please provide the booking purpose!
-    //     </Typography>
-    //   );
-    // }
   }
 
   //end of ...
@@ -961,7 +949,16 @@ class AppointmentApp extends Component {
     }
   }
   renderStepActions(step) {
-    const { stepIndex } = this.state;
+    const { stepIndex, ...data } = this.state;
+
+    const contactFormFilled =
+      data.firstName &&
+      data.lastName &&
+      data.phone &&
+      data.email &&
+      data.validPhone &&
+      data.skillset &&
+      data.validEmail;
 
     return (
       <div style={{ margin: "12px 0" }}>
@@ -977,6 +974,8 @@ class AppointmentApp extends Component {
                 this.state.startDate === null &&
                 this.state.endDate === null
               ? "Choose a date"
+              : stepIndex === 0 && !contactFormFilled
+              ? "Fill in Your Information"
               : "Next"
           }
           disableTouchRipple={true}
@@ -988,6 +987,8 @@ class AppointmentApp extends Component {
               : stepIndex === 1 &&
                 this.state.startDate === null &&
                 this.state.endDate === null
+              ? true
+              : stepIndex === 0 && !contactFormFilled
               ? true
               : null
           }
@@ -1025,14 +1026,6 @@ class AppointmentApp extends Component {
       confirmationSnackbarOpen,
       ...data
     } = this.state;
-    const contactFormFilled =
-      data.firstName &&
-      data.lastName &&
-      data.phone &&
-      data.email &&
-      data.validPhone &&
-      data.skillset &&
-      data.validEmail;
 
     const DatePickerRange = () => (
       <div>
@@ -1073,9 +1066,14 @@ class AppointmentApp extends Component {
       <div>
         <AppBar
           title={
-            <div style={{}}>Booking Form for ACE Bioinformatics Facilities</div>
+            smallScreen ? (
+              <div>ACE Bioinformatics</div>
+            ) : (
+              <div>Booking Form for ACE Bioinformatics Facilities</div>
+            )
           }
-          iconClassNameRight="muidocs-icon-navigation-expand-more"
+          // iconClassNameRight="muidocs-icon-navigation-expand-more"
+          iconElementRight={<img src="/acewhite.svg" />}
         />
         <section
           style={{
@@ -1310,11 +1308,7 @@ class AppointmentApp extends Component {
                     </Link>
                     <RaisedButton
                       style={{ display: "block", backgroundColor: "#00C853" }}
-                      label={
-                        contactFormFilled
-                          ? "Schedule"
-                          : "Fill out your contact information in section 1 to schedule"
-                      }
+                      label={"Schedule"}
                       labelPosition="before"
                       primary={true}
                       fullWidth={true}
@@ -1324,7 +1318,7 @@ class AppointmentApp extends Component {
                             .confirmationModalOpen
                         })
                       }
-                      disabled={!contactFormFilled || data.processed}
+                      disabled={data.processed}
                       style={{ marginTop: 20, maxWidth: 100 }}
                     />
                   </section>{" "}
