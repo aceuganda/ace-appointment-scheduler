@@ -9,6 +9,7 @@ import DatePicker from "material-ui/DatePicker";
 import Dialog2 from "material-ui/Dialog";
 import Link from "@material-ui/core/Link";
 import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
 
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -133,6 +134,9 @@ class AppointmentApp extends Component {
         this.state.vrPurpose === "vrOther"
           ? this.state.vrOther
           : this.state.vrPurpose,
+      charge: this.state.charge,
+      agreement: this.state.agreement,
+      chargeAmount: this.state.chargeAmount,
       slot_startDate: moment(this.state.startDate).format("YYYY-DD-MM"),
       slot_endDate: moment(this.state.endDate).format("YYYY-DD-MM"),
       slot_startTime: st,
@@ -140,35 +144,26 @@ class AppointmentApp extends Component {
       slot_days: this.state.endDate.diff(this.state.startDate, "days") + 1,
       slot_hours: duration
     };
-    // console.log("form", newAppointment);
+    console.log("form", newAppointment);
 
-    setTimeout(() => {
-      this.setState({
-        confirmationSnackbarMessage: "Appointment succesfully added!",
-        confirmationSnackbarOpen: true,
-        processed: true,
-        loading: false
+    axios
+      .post(API_BASE + "api/appointmentCreate", newAppointment)
+      .then(response =>
+        this.setState({
+          confirmationSnackbarMessage: "Appointment succesfully added!",
+          confirmationSnackbarOpen: true,
+          processed: true,
+          loading: false
+        })
+      )
+      .catch(err => {
+        console.log(err);
+        return this.setState({
+          confirmationSnackbarMessage: "Appointment failed to save.",
+          confirmationSnackbarOpen: true,
+          loading: false
+        });
       });
-    }, 3500);
-
-    // axios
-    //   .post(API_BASE + "api/appointmentCreate", newAppointment)
-    //   .then(response =>
-    //     this.setState({
-    //       confirmationSnackbarMessage: "Appointment succesfully added!",
-    //       confirmationSnackbarOpen: true,
-    //       processed: true,
-    //       loading: false
-    //     })
-    //   )
-    //   .catch(err => {
-    //     console.log(err);
-    //     return this.setState({
-    //       confirmationSnackbarMessage: "Appointment failed to save.",
-    //       confirmationSnackbarOpen: true,
-    //       loading: false
-    //     });
-    //   });
   }
 
   handleNext = () => {
@@ -334,6 +329,9 @@ class AppointmentApp extends Component {
         </p>
         <p>
           Email: <span style={spanStyle}>{this.state.email}</span>
+        </p>
+        <p>
+          Purpose: <span style={spanStyle}>{this.state.purpose}</span>
         </p>
         <p>
           Appointment Date: From{" "}
@@ -1074,7 +1072,9 @@ class AppointmentApp extends Component {
     return (
       <div>
         <AppBar
-          title="African Center of Excellence in Bioinformatics"
+          title={
+            <div style={{}}>Booking Form for ACE Bioinformatics Facilities</div>
+          }
           iconClassNameRight="muidocs-icon-navigation-expand-more"
         />
         <section
