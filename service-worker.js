@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/ace-appointment-scheduler/precache-manifest.d206b087ef8537183c9eacc8a4852136.js"
+  "/ace-appointment-scheduler/precache-manifest.679e41b5f413c33265c08b5ad7dc6536.js"
 );
 
 self.addEventListener('message', (event) => {
