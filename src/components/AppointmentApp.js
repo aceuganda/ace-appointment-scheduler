@@ -354,18 +354,6 @@ class AppointmentApp extends Component {
             <section>
               <FormLabel component="legend">
                 {" "}
-                How many people will be attending the meeting?
-              </FormLabel>
-              <TextField
-                style={{ display: "block", marginBottom: 15, marginTop: 15 }}
-                name="number"
-                hintText="Number"
-                onChange={(evt, newValue) =>
-                  this.setState({ number: newValue })
-                }
-              />
-              <FormLabel component="legend">
-                {" "}
                 What type of Analysis do you expect to do?
               </FormLabel>
               <TextField
@@ -1075,7 +1063,12 @@ class AppointmentApp extends Component {
           }
           // iconClassNameRight="muidocs-icon-navigation-expand-more"
           iconElementRight={
-            <img src={process.env.PUBLIC_URL + "/acewhite.png"} />
+            <a href="/ace-appointment-scheduler">
+              <img
+                alt="ACE Logo"
+                src={process.env.PUBLIC_URL + "/acewhite.png"}
+              />
+            </a>
           }
         />
         <section
