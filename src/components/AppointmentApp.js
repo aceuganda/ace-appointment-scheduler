@@ -1063,8 +1063,11 @@ class AppointmentApp extends Component {
           }
           // iconClassNameRight="muidocs-icon-navigation-expand-more"
           iconElementRight={
-            <a href="/">
-              <img src={process.env.PUBLIC_URL + "/acewhite.png"} />
+            <a href="/ace-appointment-scheduler">
+              <img
+                alt="ACE Logo"
+                src={process.env.PUBLIC_URL + "/acewhite.png"}
+              />
             </a>
           }
         />
