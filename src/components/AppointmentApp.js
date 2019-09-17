@@ -1204,7 +1204,17 @@ class AppointmentApp extends Component {
             actions={modalActions}
             title="Confirm your appointment"
           >
-            <AppointmentConfirmation />
+            <AppointmentConfirmation
+              firstName={this.state.firstName}
+              lastName={this.state.lastName}
+              phone={this.state.phone}
+              purpose={this.state.purpose}
+              startDate={this.state.startDate}
+              endDate={this.state.endDate}
+              startTime={this.state.startTime}
+              endTime={this.state.endTime}
+              email={this.state.email}
+            />
           </Dialog2>
 
           <Dialog
