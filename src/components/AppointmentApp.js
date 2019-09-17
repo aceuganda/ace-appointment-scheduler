@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import React, { Component, useState } from "react";
 import AppBar from "material-ui/AppBar";
 import RaisedButton from "material-ui/RaisedButton";
@@ -39,6 +37,9 @@ import { DateRangePicker } from "react-dates";
 import { Step, Stepper, StepLabel, StepContent } from "material-ui/Stepper";
 import { RadioButton, RadioButtonGroup } from "material-ui/RadioButton";
 import axios from "axios";
+import { Agreement } from "./content/Agreement";
+import { AppointmentConfirmation } from "./content/AppointmentConfirmation";
+import { QAnalysisType } from "./content/Questions";
 
 const API_BASE = "https://aceuganda.herokuapp.com/";
 
@@ -163,15 +164,15 @@ class AppointmentApp extends Component {
       });
   }
 
-  handleNext = () => {
+  handleNext() {
     const { stepIndex } = this.state;
     this.setState({
       stepIndex: stepIndex + 1,
       finished: stepIndex >= 5
     });
-  };
+  }
 
-  handlePrev = () => {
+  handlePrev() {
     const { stepIndex } = this.state;
     if (stepIndex > 0) {
       this.setState({ stepIndex: stepIndex - 1 });
@@ -186,7 +187,7 @@ class AppointmentApp extends Component {
         //   : null;
       }
     }
-  };
+  }
   validateEmail(email) {
     const regex = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
     return regex.test(email)
@@ -208,151 +209,18 @@ class AppointmentApp extends Component {
     return isValid;
   }
 
-  //end of ...
-  renderAgreement() {
-    return (
-      <section>
-        <p>
-          Request to use equipment, computers or facilities shall be made at
-          least 3 working days prior through IDI ACE Bioinformatics authorities.
-        </p>{" "}
-        <p>
-          No person shall without authority access or attempt to gain access to
-          any computer and or facility.
-        </p>
-        <p>
-          The granted access will only be for a limited time only as requested
-          for by the user, but can be extended or reduced depending on the
-          availability of the facility all at the discretion of the Facilities
-          manager.
-        </p>
-        <p>
-          Access shall only be to very specific information and will not include
-          access to information that the user does not require access to.
-        </p>
-        <p>
-          The ACE designee must be present and onsite when the facility or
-          equipment are being used.
-        </p>
-        <p>
-          IDI/designee will assume the responsibility of supervising the user to
-          ensure compliance and protecting the facilities.
-        </p>
-        <p>
-          Facility use and or use of computers shall be on first come first
-          serve basis, but manager/in-charge may give priority
-        </p>
-        <p>
-          While using the facility, cell phones and other gadgets should be set
-          silent or turned off to avoid disruptions and any applications with
-          audio output should be used with headphones.
-        </p>
-        <p>
-          Conversations and discussions should also be kept silent to avoid
-          disrupting other users
-        </p>
-        <p>
-          Users of the computer clusters should avoid saving their work on the
-          computers as these would be deleted. Files must be saved on personal
-          hard drives on USB/Flash drive after a day’s work to avoid loss.
-        </p>
-        <p>
-          Personal, sensitive and confidential data types shall not be stored on
-          external hosted service such as Dropbox or Google docs.
-        </p>
-        <p>
-          Request and approval must be sought from the ACE bioinformatics
-          head/manager and head of department to use the data.
-        </p>
-        <p>
-          Only the ACE bioinformatics IT systems manager will be permitted to
-          store, make manipulations and backup data. Outside users are
-          discouraged from attempting to make any changes to data and any such
-          changes whether intentional or accidental must be reported.
-        </p>
-        <p>
-          Accessing pornography or profane content and using the facility to
-          disseminate offensive, threatening or abusive messages is strictly
-          prohibited in this facility. Individuals who violate this prohibition
-          will be subject to disciplinary action that may result into loss of
-          access or ban.
-        </p>
-        <p>
-          Non facility staff and students are prohibited from changing any
-          computer hardware or software. This violation may lead to loss of
-          facility privileges.
-        </p>
-        <p>
-          No external user shall remove, interfere or tamper with any components
-          of the facility or computer or use any computer system in ways that
-          interfere with its use
-        </p>
-        <p>
-          Damage to computers or facilities will lead to fines and may in some
-          cases result into loss or denial of facility access privileges
-        </p>
-        <p>
-          A record shall be maintained to indicate arrival and departure of
-          visitors or persons utilising the facility
-        </p>
-        <p>
-          No food or drinks shall be consumed in the computer rooms. Any
-          accidental spills on equipment and computers must be reported after
-          which an assessment shall be done to determine damage.
-        </p>
-      </section>
-    );
-  }
-  renderAppointmentConfirmation() {
-    const spanStyle = { color: "#00C853" };
-    return (
-      <section>
-        <p>
-          Name:{" "}
-          <span style={spanStyle}>
-            {this.state.firstName} {this.state.lastName}
-          </span>
-        </p>
-        <p>
-          Number: <span style={spanStyle}>{this.state.phone}</span>
-        </p>
-        <p>
-          Email: <span style={spanStyle}>{this.state.email}</span>
-        </p>
-        <p>
-          Purpose: <span style={spanStyle}>{this.state.purpose}</span>
-        </p>
-        <p>
-          Appointment Date: From{" "}
-          <span style={spanStyle}>
-            {moment(this.state.startDate).format("dddd[,] MMMM Do[,] YYYY")}
-          </span>{" "}
-          to{" "}
-          <span style={spanStyle}>
-            {moment(this.state.endDate).format("dddd[,] MMMM Do[,] YYYY")}
-          </span>{" "}
-        </p>
-        <p>
-          Appointment Time: From{" "}
-          <span style={spanStyle}>
-            {moment(this.state.startTime).format("HH:mm")}
-          </span>{" "}
-          to{" "}
-          <span style={spanStyle}>
-            {moment(this.state.endTime).format("HH:mm")}
-          </span>
-        </p>
-      </section>
-    );
-  }
-
   renderAdditionalInformation() {
     switch (this.state.purpose) {
       case "Individual Research/Compute Core":
         return (
           <div>
             <section>
-              <FormLabel component="legend">
+              <QAnalysisType
+                onChange={(evt, newValue) =>
+                  this.setState({ analysis: newValue })
+                }
+              />
+              {/* <FormLabel component="legend">
                 {" "}
                 What type of Analysis do you expect to do?
               </FormLabel>
@@ -361,10 +229,7 @@ class AppointmentApp extends Component {
                 style={{ display: "block", marginBottom: 15, marginTop: 15 }}
                 name="analysis"
                 hintText="Analysis"
-                onChange={(evt, newValue) =>
-                  this.setState({ analysis: newValue })
-                }
-              />
+              /> */}
               <FormLabel component="legend">
                 {" "}
                 Could you provide us with a brief description of the software
@@ -938,7 +803,8 @@ class AppointmentApp extends Component {
     }
   }
   renderStepActions(step) {
-    const { stepIndex, ...data } = this.state;
+    const stepIndex = this.state.stepIndex;
+    const data = this.state;
 
     const contactFormFilled =
       data.firstName &&
@@ -981,7 +847,7 @@ class AppointmentApp extends Component {
               ? true
               : null
           }
-          onClick={this.handleNext}
+          onClick={() => this.handleNext()}
           backgroundColor="#00C853 !important"
           style={{ marginRight: 12, backgroundColor: "#00C853" }}
         />
@@ -994,9 +860,9 @@ class AppointmentApp extends Component {
             // onClick={this.handlePrev}
             onClick={() => {
               this.handlePrev();
-              this.state.vrPurpose !== ""
-                ? this.setState({ vrPurpose: "" }) //Reset vrPurpose state field
-                : null;
+              if (this.state.vrPurpose !== "") {
+                this.setState({ vrPurpose: "" });
+              } //Reset vrPurpose state field
             }}
           />
         )}
@@ -1006,15 +872,14 @@ class AppointmentApp extends Component {
 
   render() {
     const {
-      finished,
       isLoading,
       smallScreen,
       stepIndex,
       confirmationModalOpen,
       agreementModalOpen,
-      confirmationSnackbarOpen,
-      ...data
+      confirmationSnackbarOpen
     } = this.state;
+    const data = this.state;
 
     const DatePickerRange = () => (
       <div>
@@ -1221,7 +1086,6 @@ class AppointmentApp extends Component {
                 <StepContent>
                   <section>
                     <FormLabel component="legend"> Booking Purpose</FormLabel>
-
                     <RadioButtonGroup
                       style={{
                         marginTop: 15,
@@ -1340,7 +1204,7 @@ class AppointmentApp extends Component {
             actions={modalActions}
             title="Confirm your appointment"
           >
-            {this.renderAppointmentConfirmation()}
+            <AppointmentConfirmation />
           </Dialog2>
 
           <Dialog
@@ -1349,7 +1213,9 @@ class AppointmentApp extends Component {
           >
             <DialogTitle>Terms and Agreement</DialogTitle>
             <DialogContent dividers={true}>
-              <DialogContentText>{this.renderAgreement()}</DialogContentText>
+              <DialogContentText>
+                <Agreement />
+              </DialogContentText>
             </DialogContent>
             <DialogActions>
               <Button
