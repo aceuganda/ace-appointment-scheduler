@@ -880,13 +880,6 @@ class AppointmentApp extends Component {
             <DialogActions>
               <Button
                 onClick={() => this.setState({ agreementModalOpen: false })}
-                color="secondary"
-                variant="contained"
-              >
-                Disagree
-              </Button>
-              <Button
-                onClick={() => this.setState({ agreementModalOpen: false })}
                 color="primary"
                 variant="contained"
                 autoFocus
