@@ -133,7 +133,8 @@ class AppointmentApp extends Component {
       .post(API_BASE + "api/appointmentCreate", newAppointment)
       .then(response =>
         this.setState({
-          confirmationSnackbarMessage: "Appointment succesfully added!",
+          confirmationSnackbarMessage:
+            "Appointment succesfully added! We will be communicating with you shortly",
           confirmationSnackbarOpen: true,
           processed: true,
           loading: false
